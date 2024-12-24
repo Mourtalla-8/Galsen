@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Galsen</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dokdo&family=Funnel+Display:wght@300..800&family=Rock+3D&family=Shizuru&display=swap');
+
+        html {
+            overflow-y: scroll;
+        }
+        body {
+            background-color: #86A788;
+        }
+        .header {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        .senegalMap,
+        .regionMap {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        h1 {
+            font-family: "Rock 3D", serif;
+            font-weight: 400;
+            font-style: normal;
+            color: #4A4947;
+            font-size: 70px;
+            margin: 0;
+        }
+        h2 {
+            font-family: "Shizuru", serif;
+            font-size: 40px;
+            font-weight: 400;
+            font-style: normal;
+            color: #4A4947;
+            margin: 0;
+        }
+        p {
+
+            font-family: "Funnel Display", serif;
+            font-optical-sizing: auto;
+            font-weight: 400;
+            font-style: normal;
+            color: #4A4947;
+        }
+
+
+        .region-container {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 20px 0;
+        }
+
+        .region-content {
+            display: none;
+            text-align: center;
+            padding: 20px 20px 10px;
+        }
+        .back-button {
+            display: none;
+            padding: 10px 20px;
+            background-color: #FFFDEC;
+            color: #4A4947;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 5px;
+        }
+        .back-button:hover {
+            background-color: #FFCFCF;
+            transform: scale(1.1);
+        }
+        .back-button:active {
+            transform: scale(0.95);
+        }
+
+        .tanji {
+            display: flex;
+            justify-content: flex-end;
+        }
+        .tanji p {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-family: "Dokdo", serif;
+            font-weight: 400;
+            font-style: normal;
+            color: whitesmoke;
+            font-size: 20px;
+        }
+
+        .region-name {
+            position: absolute;
+            background-color: rgba(255, 253, 236, 0.7);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-family: "Funnel Display", serif;
+            font-size: 14px;
+            font-weight: bold;
+            color: #4A4947;
+            display: none;
+            pointer-events: none;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="header">
+            <div>
+                <h1>Galsen</h1>
+            </div>
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="300" height="200" viewBox="0 0 300 200">
+                    <!-- bande verte -->
+                    <rect x="0" y="0" width="100" height="200" fill="#00853F"/>
+                    <!-- jaune -->
+                    <rect x="100" y="0" width="100" height="200" fill="#FDEF42"/>
+                    <!-- rouge -->
+                    <rect x="200" y="0" width="100" height="200" fill="#E31B23"/>
+                    <!-- étoile -->
+                    <polygon points="
+                                150,60
+                                158,90
+                                185,90
+                                163,110
+                                170,140
+                                150,120
+                                130,140
+                                137,110
+                                115,90
+                                142,90"
+                            fill="#00853F"
+                    />
+                </svg>
+            </div>
+        </div>
+        <hr>
+        <div class="senegalMap">
+            <object id="senegalMap"  type="image/svg+xml" data="senegal.svg">
+                Votre navigateur ne supporte pas les SVG.
+            </object>
+        </div>
+        <div class="region-container">
+            <button id="backButton" class="back-button">← Retour</button>
+            <div id="regionContent" class="region-content"></div>
+        </div>
+    </div>
+    <div class="tanji">
+        <p>
+            @Tanjiro - Mourtalla
+        </p>
+    </div>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const mapDiv = document.querySelector('.senegalMap')
+            const regionContentDiv = document.getElementById('regionContent')
+            const backButton = document.getElementById('backButton')
+            const regionNameDisplay = document.createElement('div');
+            regionNameDisplay.classList.add('region-name');
+            document.body.appendChild(regionNameDisplay);
+
+            const regionData = {
+                "SN-DK": "Bienvenue à Dakar, la capitale vibrante du Sénégal.",
+                "SN-DB": "Découverte de Diourbel, célèbre pour son patrimoine religieux.",
+                "SN-FK": "Fatick : une région riche en traditions sérères.",
+                "SN-KE": "Kédougou : explorez les collines et la beauté naturelle.",
+                "SN-KA": "Kaffrine : cœur de l'agriculture sénégalaise.",
+                "SN-KL": "Kaolack : un hub commercial et culturel important.",
+                "SN-KD": "Kolda : découvrez la nature et les villages paisibles.",
+                "SN-MT": "Matam : la porte d'entrée du Sénégal oriental.",
+                "SN-SE": "Sédhiou : au cœur de la Casamance historique.",
+                "SN-SL": "Saint-Louis : une ville d'histoire et de culture.",
+                "SN-TC": "Tambacounda : la plus grande région du Sénégal.",
+                "SN-TH": "Thiès : l'industrie et l'artisanat réunis.",
+                "SN-ZG": "Ziguinchor : au cœur de la verte Casamance.",
+                "SN-LG": "Louga : un centre d'élevage et de culture."
+            }
+
+            const regionNames = {
+                "SN-DK": "Dakar",
+                "SN-DB": "Diourbel",
+                "SN-FK": "Fatick",
+                "SN-KE": "Kedougou",
+                "SN-KA": "Kaffrine",
+                "SN-KL": "Kaolack",
+                "SN-KD": "Kolda",
+                "SN-MT": "Matam",
+                "SN-SE": "Sedhiou",
+                "SN-SL": "Saint-Louis",
+                "SN-TC": "Tambacounda",
+                "SN-TH": "Thies",
+                "SN-ZG": "Ziguinchor",
+                "SN-LG": "Louga"
+            }
+
+            // chargement de la carte principale
+            const object = document.getElementById('senegalMap')
+
+            object.onload = function () {
+                const svgDoc = object.contentDocument;
+                // console.log(svgDoc)
+                if (svgDoc) {
+                    // ajouter des événements de clic pour chaque région
+                    Object.keys(regionData).forEach(regionId => {
+                        const regionElement = svgDoc.getElementById(regionId);
+                        // console.log(regionElement)
+                        if (regionElement) {
+                            regionElement.addEventListener('click', function () {
+                                showRegionContent(regionId, regionData[regionId])
+                            });
+
+                            // afficher le nom lors du hover
+                            regionElement.addEventListener('mouseenter', function (event) {
+                                const regionName = regionNames[regionId];
+                                regionNameDisplay.textContent = regionName;
+
+                                regionNameDisplay.style.left = `${event.pageX + 200}px`;
+                                regionNameDisplay.style.top = `${event.pageY + 200}px`;
+                                regionNameDisplay.style.display = 'block';
+                            });
+
+                            // mise à jour de la position du nom
+                            regionElement.addEventListener('mousemove', function (event) {
+                                regionNameDisplay.style.left = `${event.pageX + 200}px`;
+                                regionNameDisplay.style.top = `${event.pageY + 200}px`;
+                            });
+
+                            // cacher le nom
+                            regionElement.addEventListener('mouseleave', function () {
+                                regionNameDisplay.style.display = 'none';
+                            });
+                        }
+
+                    });
+
+
+                }
+            };
+
+
+            // affichage du contenu de la région sélectionnée
+            function showRegionContent(regionId, content) {
+                mapDiv.style.display = 'none';
+                regionContentDiv.style.display = 'block';
+                regionContentDiv.innerHTML = `
+                    <h2>${regionNames[regionId]}</h2>
+                    <p>${content}</p>
+                `;
+
+                // charger l'SVG individuel de la région
+                const regionSvgFile = `./regions/${regionId.toLowerCase()}.svg`;
+
+                // créer un conteneur pour la carte de la région
+                const svgContainer = document.createElement('div')
+                svgContainer.classList.add('regionMap')
+
+                // charger le SVG de la région
+                fetch(regionSvgFile)
+                    .then(response =>  /* console.log(response) **/ response.text())
+                    .then(svgData => {
+                        // console.log(svgData)
+                        svgContainer.innerHTML = svgData
+
+                        // sélectionner le SVG de la région
+                        // const regionSvg = svgContainer.querySelector('svg')
+
+                        // appliquer le viewBox et la taille spécifiée
+                        // regionSvg.setAttribute('viewBox', '230 390 300 200')
+                        // regionSvg.setAttribute('width', '500px')
+                        // regionSvg.setAttribute('height', '400px')
+
+                        regionContentDiv.appendChild(svgContainer);
+                    })
+                    .catch(error => console.error('Erreur de chargement du fichier SVG:', error))
+
+                // afficher le bouton de retour
+                backButton.style.display = 'block'
+
+                document.title = regionNames[regionId] + " - Galsen"
+            }
+
+            // action du bouton de retour
+            backButton.addEventListener('click', function () {
+                mapDiv.style.display = 'flex'
+                regionContentDiv.style.display = 'none'
+                backButton.style.display = 'none'
+                regionContentDiv.innerHTML = '';
+
+                document.title = "Galsen"
+            });
+        });
+    </script>
+</body>
+</html>
