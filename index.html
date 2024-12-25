@@ -260,6 +260,10 @@
 
                 // charger l'SVG individuel de la région
                 const regionSvgFile = `regions/${regionId.toUpperCase()}.svg`;
+                console.log(regionSvgFile);  // Vérifiez si cela renvoie le bon chemin, par exemple: 'regions/SN-DK.svg'
+                
+                const fullUrl = `https://mourtalla-8.github.io/Galsen/regions/${regionId.toUpperCase()}.svg`;
+                console.log(fullUrl);
 
                 // créer un conteneur pour la carte de la région
                 const svgContainer = document.createElement('div')
