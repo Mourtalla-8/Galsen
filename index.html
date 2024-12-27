@@ -299,7 +299,7 @@
 
                     // zoom avec la molette de la souris
                     svgElement.addEventListener('wheel', (e) => {
-                        if (window.innerWidth <= 1000) {
+                        if (window.innerWidth <= 1000 && window.innerHeight <= 850) {
                             e.preventDefault(); // désactiver le zoom sur les petits écrans
                             return;
                         }
@@ -384,14 +384,12 @@
 
                     // déplacements tactiles pour les mobiles
                     svgElement.addEventListener('touchstart', (e) => {
-                        e.preventDefault();
                         isDragging = true;
                         startX = e.touches[0].clientX; // utiliser la position de la première touche
                         startY = e.touches[0].clientY;
                     });
 
-                    svgElement.addEventListener('touchmove', (e) => { 
-                        e.preventDefault(); 
+                    svgElement.addEventListener('touchmove', (e) => {
                         handleTouchMove
                     });
 
