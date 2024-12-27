@@ -384,14 +384,13 @@
 
                     // déplacements tactiles pour les mobiles
                     svgElement.addEventListener('touchstart', (e) => {
+                        e.preventDefault()
                         isDragging = true;
                         startX = e.touches[0].clientX; // utiliser la position de la première touche
                         startY = e.touches[0].clientY;
                     });
 
-                    svgElement.addEventListener('touchmove', (e) => {
-                        handleTouchMove
-                    });
+                    svgElement.addEventListener('touchmove', handleTouchMove);
 
                     svgElement.addEventListener('touchend', () => {
                         isDragging = false;
