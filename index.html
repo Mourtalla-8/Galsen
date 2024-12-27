@@ -6,109 +6,147 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Dokdo&family=Funnel+Display:wght@300..800&family=Rock+3D&family=Shizuru&display=swap');
 
-        html {
-            overflow-y: scroll;
-        }
+        /* === base styles === */
         body {
             background-color: #86A788;
         }
+
+        h1, h2, p {
+            color: #4A4947;
+            margin: 0;
+        }
+
+        h1 {
+            font-family: "Rock 3D", serif;
+            font-size: 70px;
+            font-weight: 400;
+        }
+
+        h2 {
+            font-family: "Shizuru", serif;
+            font-size: 40px;
+            font-weight: 400;
+        }
+
+        p {
+            font-family: "Funnel Display", serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        /* === header === */
         .header {
             display: flex;
             justify-content: space-around;
             align-items: center;
         }
-        .senegalMap,
-        .regionMap {
+
+        /* === map container === */
+        .map-container {
             display: flex;
-            justify-content: center;
             align-items: center;
-        }
-
-        h1 {
-            font-family: "Rock 3D", serif;
-            font-weight: 400;
-            font-style: normal;
-            color: #4A4947;
-            font-size: 70px;
-            margin: 0;
-        }
-        h2 {
-            font-family: "Shizuru", serif;
-            font-size: 40px;
-            font-weight: 400;
-            font-style: normal;
-            color: #4A4947;
-            margin: 0;
-        }
-        p {
-
-            font-family: "Funnel Display", serif;
-            font-optical-sizing: auto;
-            font-weight: 400;
-            font-style: normal;
-            color: #4A4947;
-        }
-
-
-        .region-container {
-            display: flex;
             justify-content: center;
+            padding-top: 20px;
+            width: 100%;
+        }
+
+        .senegalMap {
+            position: relative;
+            width: 60%;
+            height: 450px;
+            border-radius: 10px;
+            background: #31363F;
+            overflow: hidden;
+        }
+
+        .controleButton {
+            position: absolute;
+            top: 20px;
+            left: 15px;
+            display: flex;
             flex-direction: column;
-            align-items: center;
-            margin: 20px 20px 0;
+            gap: 15px;
         }
 
-        .region-content {
-            display: none;
-            text-align: center;
-            padding: 20px 20px 10px;
+        .zoomButton {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            /*align-items: center;*/
         }
-        .back-button {
-            display: none;
-            padding: 10px 20px;
-            background-color: #FFFDEC;
-            color: #4A4947;
+
+        .controleButton button {
+            width: 35px;
+            height: 35px;
+            background-color: rgba(255, 253, 236, 0.7);
             border: none;
-            font-size: 16px;
+            border-radius: 50%;
             cursor: pointer;
-            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .controleButton button:hover {
+            border: outset #FFE2E2;
+        }
+
+        .controleButton button:active {
+            border: inset;
+        }
+
+        button svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* === tooltip Styles === */
+        .region-name {
+            position: absolute;
+            display: none;
+            z-index: 100;
+            pointer-events: none;
+            background-color: rgba(255, 253, 236, 0.7);
+            padding: 5px 10px;
             border-radius: 5px;
         }
-        .back-button:hover {
-            background-color: #FFCFCF;
-            transform: scale(1.1);
-        }
-        .back-button:active {
-            transform: scale(0.95);
+
+        .region-name h3 {
+            margin: 0;
+            font-size: 14px;
+            font-weight: bold;
         }
 
-        .tanji {
-            display: flex;
-            justify-content: flex-end;
+        .region-name p {
+            margin: 0;
+            font-size: 10px;
         }
+
+        /* === footer styles === */
+        .tanji {
+            position: relative;
+            text-align: right;
+            margin-top: 20px;
+        }
+
         .tanji p {
             position: absolute;
             bottom: 10px;
             right: 10px;
             font-family: "Dokdo", serif;
-            font-weight: 400;
-            font-style: normal;
-            color: whitesmoke;
             font-size: 20px;
+            color: whitesmoke;
         }
 
-        .region-name {
-            position: absolute;
-            background-color: rgba(255, 253, 236, 0.7);
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-family: "Funnel Display", serif;
-            font-size: 14px;
-            font-weight: bold;
-            color: #4A4947;
-            display: none;
-            pointer-events: none;
-            z-index: 100;
+        @media screen and (max-width: 750px) {
+            .header {
+                flex-direction: column;
+                gap: 20px;
+            }
+            .senegalMap {
+                width: 100%;
+            }
+            .tanji p {
+                bottom: 20px;
+            }
         }
     </style>
 </head>
@@ -138,20 +176,38 @@
                                 137,110
                                 115,90
                                 142,90"
-                            fill="#00853F"
+                                fill="#00853F"
                     />
                 </svg>
             </div>
         </div>
         <hr>
-        <div class="senegalMap">
-            <object id="senegalMap"  type="image/svg+xml" data="senegal.svg">
-                Votre navigateur ne supporte pas les SVG.
-            </object>
-        </div>
-        <div class="region-container">
-            <button id="backButton" class="back-button">← Retour</button>
-            <div id="regionContent" class="region-content"></div>
+
+        <div class="map-container">
+            <div class="senegalMap">
+                <object id="senegalMap"  type="image/svg+xml" data="senegal.svg" style="width: 100%; height: 100%">
+                    Votre navigateur ne supporte pas les SVG.
+                </object>
+                <div class="controleButton">
+                    <button id="resetView">
+                        <svg xmlns="http://www.w3.org/2000/svg"  width="24" height="24" viewBox="0 0 48 48" fill="#31363F">
+                            <path d="M39.5,43h-9c-1.381,0-2.5-1.119-2.5-2.5v-9c0-1.105-0.895-2-2-2h-4c-1.105,0-2,0.895-2,2v9c0,1.381-1.119,2.5-2.5,2.5h-9	C7.119,43,6,41.881,6,40.5V21.413c0-2.299,1.054-4.471,2.859-5.893L23.071,4.321c0.545-0.428,1.313-0.428,1.857,0L39.142,15.52	C40.947,16.942,42,19.113,42,21.411V40.5C42,41.881,40.881,43,39.5,43z"></path>
+                        </svg>
+                    </button>
+                    <div class="zoomButton">
+                        <button id="zoomIn" class="zoom-button">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#31363F">
+                                <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" stroke="#31363F" stroke-width="5"/>
+                            </svg>
+                        </button>
+                        <button id="zoomOut" class="zoom-button">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#31363F">
+                                <path d="M200-440v-80h560v80H200Z" stroke="#31363F" stroke-width="0.1"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <div class="tanji">
@@ -163,28 +219,39 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const mapDiv = document.querySelector('.senegalMap')
-            const regionContentDiv = document.getElementById('regionContent')
-            const backButton = document.getElementById('backButton')
+            const senegalMap = document.querySelector(".senegalMap");
+
             const regionNameDisplay = document.createElement('div');
             regionNameDisplay.classList.add('region-name');
-            document.body.appendChild(regionNameDisplay);
+            senegalMap.appendChild(regionNameDisplay);
+            // chargement de la carte principale
+            const object = document.getElementById('senegalMap')
+
+            const zoomInButton = document.getElementById('zoomIn');
+            const zoomOutButton = document.getElementById('zoomOut');
+            const resetViewButton = document.getElementById('resetView');
+
+
+            let currentZoom = 1;
+            let panX = 0;
+            let panY = 0;
+
 
             const regionData = {
                 "SN-DK": "Bienvenue à Dakar, la capitale vibrante du Sénégal.",
-                "SN-DB": "Découverte de Diourbel, célèbre pour son patrimoine religieux.",
-                "SN-FK": "Fatick : une région riche en traditions sérères.",
-                "SN-KE": "Kédougou : explorez les collines et la beauté naturelle.",
-                "SN-KA": "Kaffrine : cœur de l'agriculture sénégalaise.",
-                "SN-KL": "Kaolack : un hub commercial et culturel important.",
-                "SN-KD": "Kolda : découvrez la nature et les villages paisibles.",
-                "SN-MT": "Matam : la porte d'entrée du Sénégal oriental.",
-                "SN-SE": "Sédhiou : au cœur de la Casamance historique.",
-                "SN-SL": "Saint-Louis : une ville d'histoire et de culture.",
-                "SN-TC": "Tambacounda : la plus grande région du Sénégal.",
-                "SN-TH": "Thiès : l'industrie et l'artisanat réunis.",
-                "SN-ZG": "Ziguinchor : au cœur de la verte Casamance.",
-                "SN-LG": "Louga : un centre d'élevage et de culture."
+                "SN-DB": "Célèbre pour son patrimoine religieux.",
+                "SN-FK": "Une région riche en traditions sérères.",
+                "SN-KE": "Explorez les collines et la beauté naturelle.",
+                "SN-KA": "Cœur de l'agriculture sénégalaise.",
+                "SN-KL": "Un hub commercial et culturel important.",
+                "SN-KD": "Découvrez la nature et les villages paisibles.",
+                "SN-MT": "La porte d'entrée du Sénégal oriental.",
+                "SN-SE": "Au cœur de la Casamance historique.",
+                "SN-SL": "Une ville d'histoire et de culture.",
+                "SN-TC": "La plus grande région du Sénégal.",
+                "SN-TH": "L'industrie et l'artisanat réunis.",
+                "SN-ZG": "Au cœur de la verte Casamance.",
+                "SN-LG": "Un centre d'élevage et de culture."
             }
 
             const regionNames = {
@@ -204,101 +271,176 @@
                 "SN-LG": "Louga"
             }
 
-            // chargement de la carte principale
-            const object = document.getElementById('senegalMap')
 
             object.onload = function () {
                 const svgDoc = object.contentDocument;
                 // console.log(svgDoc)
                 if (svgDoc) {
-                    // ajouter des événements de clic pour chaque région
-                    Object.keys(regionData).forEach(regionId => {
-                        const regionElement = svgDoc.getElementById(regionId);
-                        // console.log(regionElement)
-                        if (regionElement) {
-                            regionElement.addEventListener('click', function () {
-                                showRegionContent(regionId, regionData[regionId])
-                            });
+                    const svgElement = svgDoc.querySelector('svg');
 
-                            // afficher le nom lors du hover
-                            regionElement.addEventListener('mouseenter', function (event) {
-                                const regionName = regionNames[regionId];
-                                regionNameDisplay.textContent = regionName;
+                    // fonction pour appliquer zoom et translation
+                    function updateView() {
+                        svgElement.style.transform = `scale(${currentZoom}) translate(${panX}px, ${panY}px)`;
+                    }
 
-                                regionNameDisplay.style.left = `${event.pageX + 200}px`;
-                                regionNameDisplay.style.top = `${event.pageY + 200}px`;
-                                regionNameDisplay.style.display = 'block';
-                            });
+                    // zoom avant
+                    zoomInButton.addEventListener('click', () => {
+                        currentZoom += 0.4; // incrémente par 0.4
+                        updateView();
+                    });
 
-                            // mise à jour de la position du nom
-                            regionElement.addEventListener('mousemove', function (event) {
-                                regionNameDisplay.style.left = `${event.pageX + 200}px`;
-                                regionNameDisplay.style.top = `${event.pageY + 200}px`;
-                            });
+                    // zoom arrière
+                    zoomOutButton.addEventListener('click', () => {
+                        if (currentZoom > 0.3) { // empêche d'aller trop loin
+                            currentZoom -= 0.4;
+                            updateView();
+                        }
+                    });
 
-                            // cacher le nom
-                            regionElement.addEventListener('mouseleave', function () {
-                                regionNameDisplay.style.display = 'none';
-                            });
+                    // zoom avec la molette de la souris
+                    svgElement.addEventListener('wheel', (e) => {
+                        if (window.innerWidth <= 750) {
+                            e.preventDefault(); // désactiver le zoom sur les petits écrans
+                            return;
                         }
 
+                        e.preventDefault(); // empêche le comportement par défaut de la page
+
+                        const zoomFactor = 0.2; // ajustement du zoom
+
+                        if (e.deltaY < 0) {
+                            // zoom avant
+                            currentZoom += zoomFactor;
+                        } else {
+                            // zoom arrière
+                            currentZoom = Math.max(currentZoom - zoomFactor, 0.3); // empêche de dézoomer trop loin
+                        }
+
+                        updateView();
+                    });
+
+                    // zoom reset
+                    resetViewButton.addEventListener('click', () => {
+                        currentZoom = 1;
+                        panX = 0;
+                        panY = 0;
+                        updateView();
                     });
 
 
+                    // drag pour déplacer la vue
+                    let isDragging = false;
+                    let startX, startY;
+
+                    // déplacements de la vue pour les ordinateurs
+                    svgElement.addEventListener('mousedown', (e) => {
+                        isDragging = true;
+                        startX = e.clientX;
+                        startY = e.clientY;
+                        svgElement.style.cursor = 'grabbing';
+                    });
+
+                    svgElement.addEventListener('mousemove', (e) => {
+                        if (isDragging) {
+                            const dx = (e.clientX - startX) / currentZoom;  // calcule le déplacement horizontal par rapport à la position initiale, ajusté selon le zoom actuel
+                            const dy = (e.clientY - startY) / currentZoom;
+
+                            panX += dx; // ajoute le déplacement
+                            panY += dy;
+
+                            startX = e.clientX; // mise à jour de la position initiale
+                            startY = e.clientY;
+
+                            updateView();
+                        }
+                    });
+
+                    svgElement.addEventListener('mouseup', () => {
+                        isDragging = false;
+                        svgElement.style.cursor = 'auto';
+                    });
+
+                    svgElement.addEventListener('mouseleave', () => {
+                        isDragging = false;
+                    });
+
+
+                    // fonction de gestion des déplacements tactiles (mobile)
+                    function handleTouchMove(e) {
+                        if (isDragging) {
+                            const touch = e.touches[0]; // récupérer la première touche
+                            const dx = (touch.clientX - startX) / currentZoom;
+                            const dy = (touch.clientY - startY) / currentZoom;
+
+                            panX += dx;
+                            panY += dy;
+
+                            startX = touch.clientX;
+                            startY = touch.clientY;
+
+                            updateView();
+                        }
+                    }
+
+                    // déplacements tactiles pour les mobiles
+                    svgElement.addEventListener('touchstart', (e) => {
+                        isDragging = true;
+                        startX = e.touches[0].clientX; // utiliser la position de la première touche
+                        startY = e.touches[0].clientY;
+                        svgElement.style.cursor = 'grabbing';
+                    });
+
+                    svgElement.addEventListener('touchmove', handleTouchMove);
+
+                    svgElement.addEventListener('touchend', () => {
+                        isDragging = false;
+                        svgElement.style.cursor = 'auto';
+                    });
+
+
+                    // événements de hover et clic pour chaque région
+                    Object.keys(regionData).forEach(regionId => {
+                        const regionElement = svgDoc.getElementById(regionId);
+                        if (regionElement) {
+                            // afficher le nom lors du hover sur grand écran
+                            if (window.innerWidth > 750) {
+                                regionElement.addEventListener('mouseenter', function (event) {
+                                    const regionName = regionNames[regionId];
+                                    const content = regionData[regionId];
+
+                                    regionNameDisplay.innerHTML = `<h3>${regionName}</h3><p>${content}</p>`;
+                                    regionNameDisplay.style.left = `${event.pageX + 20}px`;
+                                    regionNameDisplay.style.top = `${event.pageY + 3}px`;
+                                    regionNameDisplay.style.display = 'block';
+                                    regionNameDisplay.style.right = 'unset'
+                                });
+
+                                regionElement.addEventListener('mousemove', function (event) {
+                                    regionNameDisplay.style.left = `${event.pageX + 20}px`;
+                                    regionNameDisplay.style.top = `${event.pageY + 3}px`;
+                                    regionNameDisplay.style.right = 'unset'
+                                });
+
+                                regionElement.addEventListener('mouseleave', function () {
+                                    regionNameDisplay.style.display = 'none';
+                                });
+                            }
+
+                            // afficher le nom lors du clic sur toutes tailles d'écrans
+                            regionElement.addEventListener('click', function () {
+                                const regionName = regionNames[regionId];
+                                const content = regionData[regionId];
+
+                                regionNameDisplay.innerHTML = `<h3>${regionName}</h3><p>${content}</p>`;
+                                regionNameDisplay.style.right = '10px';
+                                regionNameDisplay.style.top = '10px';
+                                regionNameDisplay.style.left = 'unset';
+                                regionNameDisplay.style.display = 'block';
+                            });
+                        }
+                    });
                 }
             };
-
-
-            // affichage du contenu de la région sélectionnée
-            function showRegionContent(regionId, content) {
-                mapDiv.style.display = 'none';
-                regionContentDiv.style.display = 'block';
-                regionContentDiv.innerHTML = `
-                    <h2>${regionNames[regionId]}</h2>
-                    <p>${content}</p>
-                `;
-
-                // charger l'SVG individuel de la région
-                const regionSvgFile = `regions/${regionId.toUpperCase()}.svg`;
-
-                // créer un conteneur pour la carte de la région
-                const svgContainer = document.createElement('div')
-                svgContainer.classList.add('regionMap')
-
-                // charger le SVG de la région
-                fetch(regionSvgFile)
-                    .then(response =>  /* console.log(response) **/ response.text())
-                    .then(svgData => {
-                        // console.log(svgData)
-                        svgContainer.innerHTML = svgData
-
-                        // sélectionner le SVG de la région
-                        // const regionSvg = svgContainer.querySelector('svg')
-
-                        // appliquer le viewBox et la taille spécifiée
-                        // regionSvg.setAttribute('viewBox', '230 390 300 200')
-                        // regionSvg.setAttribute('width', '500px')
-                        // regionSvg.setAttribute('height', '400px')
-
-                        regionContentDiv.appendChild(svgContainer);
-                    })
-                    .catch(error => console.error('Erreur de chargement du fichier SVG:', error))
-
-                // afficher le bouton de retour
-                backButton.style.display = 'block'
-
-                document.title = regionNames[regionId] + " - Galsen"
-            }
-
-            // action du bouton de retour
-            backButton.addEventListener('click', function () {
-                mapDiv.style.display = 'flex'
-                regionContentDiv.style.display = 'none'
-                backButton.style.display = 'none'
-                regionContentDiv.innerHTML = '';
-
-                document.title = "Galsen"
-            });
         });
     </script>
 </body>
