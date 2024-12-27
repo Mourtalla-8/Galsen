@@ -299,7 +299,7 @@
 
                     // zoom avec la molette de la souris
                     svgElement.addEventListener('wheel', (e) => {
-                        if (window.innerWidth <= 750) {
+                        if (window.innerWidth <= 1000) {
                             e.preventDefault(); // désactiver le zoom sur les petits écrans
                             return;
                         }
@@ -390,7 +390,10 @@
                         startY = e.touches[0].clientY;
                     });
 
-                    svgElement.addEventListener('touchmove', handleTouchMove);
+                    svgElement.addEventListener('touchmove', (e) => { 
+                        e.preventDefault(); 
+                        handleTouchMove
+                    });
 
                     svgElement.addEventListener('touchend', () => {
                         isDragging = false;
@@ -403,7 +406,7 @@
                         const regionElement = svgDoc.getElementById(regionId);
                         if (regionElement) {
                             // afficher le nom lors du hover sur grand écran
-                            if (window.innerWidth > 750) {
+                            if (window.innerWidth > 1000) {
                                 regionElement.addEventListener('mouseenter', function (event) {
                                     const regionName = regionNames[regionId];
                                     const content = regionData[regionId];
