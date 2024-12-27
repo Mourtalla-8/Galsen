@@ -302,7 +302,7 @@
 
                     // zoom avec la molette de la souris
                     svgElement.addEventListener('wheel', (e) => {
-                        if (window.innerWidth <= 1000 && window.innerHeight <= 850) {
+                        if (window.innerWidth < 1000 && window.innerHeight > 800) {
                             e.preventDefault(); // désactiver le zoom sur les petits écrans
                             return;
                         }
@@ -408,29 +408,27 @@
                     Object.keys(regionData).forEach(regionId => {
                         const regionElement = svgDoc.getElementById(regionId);
                         if (regionElement) {
-                            // afficher le nom lors du hover sur grand écran
-                            if (window.innerWidth > 1000) {
-                                regionElement.addEventListener('mouseenter', function (event) {
-                                    const regionName = regionNames[regionId];
-                                    const content = regionData[regionId];
+                            regionElement.addEventListener('mouseenter', function (event) {
+                                const regionName = regionNames[regionId];
+                                const content = regionData[regionId];
 
-                                    regionNameDisplay.innerHTML = `<h3>${regionName}</h3><p>${content}</p>`;
-                                    regionNameDisplay.style.left = `${event.pageX + 20}px`;
-                                    regionNameDisplay.style.top = `${event.pageY + 3}px`;
-                                    regionNameDisplay.style.display = 'block';
-                                    regionNameDisplay.style.right = 'unset'
-                                });
+                                regionNameDisplay.innerHTML = `<h3>${regionName}</h3><p>${content}</p>`;
+                                regionNameDisplay.style.left = `${event.pageX + 20}px`;
+                                regionNameDisplay.style.top = `${event.pageY + 3}px`;
+                                regionNameDisplay.style.display = 'block';
+                                regionNameDisplay.style.right = 'unset'
+                            });
 
-                                regionElement.addEventListener('mousemove', function (event) {
-                                    regionNameDisplay.style.left = `${event.pageX + 20}px`;
-                                    regionNameDisplay.style.top = `${event.pageY + 3}px`;
-                                    regionNameDisplay.style.right = 'unset'
-                                });
+                            regionElement.addEventListener('mousemove', function (event) {
+                                regionNameDisplay.style.left = `${event.pageX + 20}px`;
+                                regionNameDisplay.style.top = `${event.pageY + 3}px`;
+                                regionNameDisplay.style.right = 'unset'
+                            });
 
-                                regionElement.addEventListener('mouseleave', function () {
-                                    regionNameDisplay.style.display = 'none';
-                                });
-                            }
+                            regionElement.addEventListener('mouseleave', function () {
+                                regionNameDisplay.style.display = 'none';
+                            });
+                            
 
                             // afficher le nom lors du clic sur toutes tailles d'écrans
                             regionElement.addEventListener('click', function () {
