@@ -302,8 +302,7 @@
 
                     // zoom avec la molette de la souris
                     svgElement.addEventListener('wheel', (e) => {
-                        if (window.innerWidth < 1000 && window.innerHeight > 800) {
-                            e.preventDefault(); // désactiver le zoom sur les petits écrans
+                        if (window.innerWidth < 700 || window.innerHeight < 730) {
                             return;
                         }
 
@@ -320,7 +319,7 @@
                         }
 
                         updateView();
-                    });
+                    }, { passive: false });
 
                     // zoom reset
                     resetViewButton.addEventListener('click', () => {
