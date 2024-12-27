@@ -136,7 +136,7 @@
             color: whitesmoke;
         }
 
-        @media screen and (max-width: 750px) {
+        @media screen and (max-width: 1000px) {
             .header {
                 flex-direction: column;
                 gap: 20px;
@@ -384,10 +384,10 @@
 
                     // déplacements tactiles pour les mobiles
                     svgElement.addEventListener('touchstart', (e) => {
+                        e.preventDefault();
                         isDragging = true;
                         startX = e.touches[0].clientX; // utiliser la position de la première touche
                         startY = e.touches[0].clientY;
-                        svgElement.style.cursor = 'grabbing';
                     });
 
                     svgElement.addEventListener('touchmove', handleTouchMove);
