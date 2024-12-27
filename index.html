@@ -136,11 +136,14 @@
             color: whitesmoke;
         }
 
-        @media screen and (max-width: 1000px) {
+        @media screen and (max-width: 700px) {
             .header {
                 flex-direction: column;
                 gap: 20px;
             }
+        }
+
+        @media screen and (max-width: 1000px) {
             .senegalMap {
                 width: 100%;
             }
@@ -368,6 +371,8 @@
                     // fonction de gestion des déplacements tactiles (mobile)
                     function handleTouchMove(e) {
                         if (isDragging) {
+                            e.preventDefault();
+
                             const touch = e.touches[0]; // récupérer la première touche
                             const dx = (touch.clientX - startX) / currentZoom;
                             const dy = (touch.clientY - startY) / currentZoom;
@@ -384,13 +389,14 @@
 
                     // déplacements tactiles pour les mobiles
                     svgElement.addEventListener('touchstart', (e) => {
-                        e.preventDefault()
                         isDragging = true;
                         startX = e.touches[0].clientX; // utiliser la position de la première touche
                         startY = e.touches[0].clientY;
+
+                        e.preventDefault();
                     });
 
-                    svgElement.addEventListener('touchmove', handleTouchMove);
+                    svgElement.addEventListener('touchmove', handleTouchMove, { passive: false });
 
                     svgElement.addEventListener('touchend', () => {
                         isDragging = false;
